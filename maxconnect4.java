@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.*;
 
 /**
  *
@@ -34,6 +35,8 @@ import java.io.*;
 
 public class maxconnect4
 {
+    private static GameBoard currentGame;
+    private static AiPlayer calculon;
     public static void main(String[] args)
     {
         // check for the correct number of arguments
@@ -49,77 +52,151 @@ public class maxconnect4
         // parse the input arguments
         String game_mode = args[0].toString();				// the game mode
         String input = args[1].toString();					// the input game file
-        int depthLevel = Integer.parseInt( args[3] );  		// the depth level of the ai search
 
 
         // create and initialize the game board
-        GameBoard currentGame = new GameBoard( input );
+        currentGame = new GameBoard( input );
 
         // create the Ai Player
-        AiPlayer calculon = new AiPlayer();
-
-        //  variables to keep up with the game
-        int playColumn = 99;				//  the players choice of column to play
-        boolean playMade = false;			//  set to true once a play has been made
+        calculon = new AiPlayer();
 
         /***********************************************************
          * Begin game play
          */
         System.out.print("\nMaxConnect-4 game\n");
-        System.out.print("game state before move:\n");
-
-        //print the current game board
-        currentGame.printGameBoard();
-        // print the current scores
-        currentGame.printCurrentScore();
 
 
         if( game_mode.equalsIgnoreCase( "interactive" ) )
         {
             String nextTurn = args[2].toString();
-            return;
-        }
-        else if( game_mode.equalsIgnoreCase("one-move"))
-        {
-            // get the output file name
-            String output = args[2].toString();				// the output game file
+            int depthLevel = Integer.parseInt( args[3] );
 
-            // ****************** this chunk of code makes the computer play
-            if( currentGame.getPieceCount() < 42 )
+            // set ai to be player 1 or 2 depending on next turn
+            if(nextTurn.equalsIgnoreCase("computer-next"))
             {
-                // AI play - random play
-                playColumn = calculon.findBestPlay( currentGame );
-
-                // play the piece
-                currentGame.playPiece( playColumn );
-
-                // display the current game board
-                currentGame.printCurrentGameBoard(playColumn);
-
-                System.out.print("game state after move:\n");
-                currentGame.printGameBoard();
-
-                // print the current scores
-                currentGame.printCurrentScore();
-
-                currentGame.printGameBoardToFile( output );
+                // specify ai player number for evaluation function
+                calculon.playerNumber = currentGame.getCurrentTurn();
+            }
+            else if(nextTurn.equalsIgnoreCase("human-next"))
+            {
+                // if human is next and current turn equals 1, then ai plays next as player 2
+                calculon.playerNumber = (currentGame.getCurrentTurn() == 1) ? 2 : 1;
             }
             else
             {
-                System.out.println("\nI can't play.\nThe Board is Full\n\nGame Over");
+                System.out.println("Next player undetermined: " + nextTurn);
+                exit_function(0);
             }
 
-            //************************** end computer play
+            while(true)
+            {
+                //print the current game board
+                currentGame.printGameBoard();
+                // print the current scores
+                currentGame.printCurrentScore();
+                // if board is full, exit
+                if(currentGame.isFull())
+                {
+                    System.out.println("No more moves to make");
+                    return;
+                }
+
+                if( nextTurn.equalsIgnoreCase("computer-next"))
+                {
+                    // choose and make the next move
+                    // save board state in file called computer.txt
+                    int playColumn = oneMove("computer.txt", depthLevel);
+                    nextTurn = "human-next";
+
+                    // display the current game board
+                    currentGame.printCurrentMove(playColumn);
+
+                }
+                else if(nextTurn.equalsIgnoreCase("human-next"))
+                {
+                    boolean validChoice = false;
+                    int column = 9;
+
+                    while(validChoice == false)
+                    {
+                        System.out.print("Choose column to place a piece: ");
+                        Scanner userInput = new Scanner(System.in);
+                        column = userInput.nextInt();
+
+                        if(currentGame.isValidPlay(column))
+                            validChoice = true;
+                        else
+                            System.out.println("Invalid choice, try again");
+                    }
+                    currentGame.playPiece(column);
+                    currentGame.printCurrentMove(column);
+                    currentGame.printGameBoardToFile( "human.txt" );
+                    nextTurn = "computer-next";
+                }
+            }
+
+
+        }
+        else if( game_mode.equalsIgnoreCase("one-move"))
+        {
+
+            // specify ai player number for evaluation function
+            calculon.playerNumber = currentGame.getCurrentTurn();
+
+            System.out.print("game state before move:\n");
+            //print the current game board
+            currentGame.printGameBoard();
+            // print the current scores
+            currentGame.printCurrentScore();
+
+            // get the output file name
+            String output = args[2].toString();				// the output game file
+            int depthLevel = Integer.parseInt( args[3] );   // the depth level of the ai search
+            int playColumn = oneMove(output, depthLevel);
+
+            // display the current game board
+            currentGame.printCurrentMove(playColumn);
+
+            System.out.print("game state after move:\n");
+            currentGame.printGameBoard();
+
+            // print the current scores
+            currentGame.printCurrentScore();
         }
         else if( !game_mode.equalsIgnoreCase( "one-move" ) )
         {
             System.out.println( "\n" + game_mode + " is an unrecognized game mode \n try again. \n" );
             return;
         }
-
         return;
-
     } // end of main()
+
+    private static int oneMove(String output, int depthLevel)
+    {
+        // assign worst cases for alpha and beta
+        int alpha = Integer.MIN_VALUE;
+        int beta = Integer.MAX_VALUE;
+
+
+        // ****************** this chunk of code makes the computer play
+        if( currentGame.getPieceCount() < 42 )
+        {
+
+            // AI play - random play
+            int playColumn = calculon.dlPruning( currentGame, alpha, beta, depthLevel);
+
+            // play the piece
+            currentGame.playPiece( playColumn );
+            currentGame.printGameBoardToFile( output );
+
+            return playColumn;
+        }
+        else
+        {
+            System.out.println("\nI can't play.\nThe Board is Full\n\nGame Over");
+            return 99;
+        }
+    }
 
     /**
      * This method is used when to exit the program prematurely.

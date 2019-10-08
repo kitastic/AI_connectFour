@@ -28,107 +28,108 @@ public class GameBoard
      */
     public GameBoard( String inputFile ) 
     {
-	this.playBoard = new int[6][7];
-	this.pieceCount = 0;
-	int counter = 0;
-	BufferedReader input = null;
-	String gameData = null;
+		this.playBoard = new int[6][7];
+		this.pieceCount = 0;
+		int counter = 0;
+		BufferedReader input = null;
+		String gameData = null;
 
-	// open the input file
-	try 
-	{
-	    input = new BufferedReader( new FileReader( inputFile ) );
-	} 
-        catch( IOException e ) 
-	{
-	    System.out.println("\nProblem opening the input file!\nTry again." +
-			       "\n");
-	    e.printStackTrace();
-	}
-
-	//read the game data from the input file
-	for(int i = 0; i < 6; i++) 
-	{
-	    try 
-	    {
-		gameData = input.readLine();
-		
-		// testing
-		// uncomment the next 2 lines to see the whole line read in
-		//System.out.println("I just read ->" + gameData + "<- " +
-		//		"outer for loop");
-		
-		// read each piece from the input file
-		for( int j = 0; j < 7; j++ ) 
+		// open the input file
+		try
 		{
-		    //testing- uncomment the next 3 lines to see each piece
-		    // that was read in
-		    //System.out.println("I just read ->" +
-		    //		( gameData.charAt( counter ) - 48 ) + 
-		    //		"<- inner for loop");
-		    
-		    this.playBoard[ i ][ j ] = gameData.charAt( counter++ ) - 48;
-		    
-		    // sanity check
-		    if( !( ( this.playBoard[ i ][ j ] == 0 ) ||
-			   ( this.playBoard[ i ][ j ] == 1 ) ||
-			   ( this.playBoard[ i ][ j ] == 2 ) ) ) 
-                    {
-			System.out.println("\nProblems!\n--The piece read " +
-					   "from the input file was not a 1, a 2 or a 0" );
-			this.exit_function( 0 );
-		    }
-		    
-		    if( this.playBoard[ i ][ j ] > 0 )
-		    {
-			this.pieceCount++;
-		    }
+			input = new BufferedReader( new FileReader( inputFile ) );
 		}
-	    } 
-	    catch( Exception e ) 
-	    {
-		System.out.println("\nProblem reading the input file!\n" +
-				   "Try again.\n");
-		e.printStackTrace();
-		this.exit_function( 0 );
-	    }
+			catch( IOException e )
+		{
+			System.out.println("\nProblem opening the input file!\nTry again." +
+					   "\n");
+			e.printStackTrace();
+		}
 
-	    //reset the counter
-	    counter = 0;
-	    
-	} // end for loop
+		//read the game data from the input file
+		for(int i = 0; i < 6; i++)
+		{
+			try
+			{
+			gameData = input.readLine();
 
-	// read one more line to get the next players turn
-	try 
-        {
-	    gameData = input.readLine();
-	} 
-	catch( Exception e ) 
-	{
-	    System.out.println("\nProblem reading the next turn!\n" +
-			       "--Try again.\n");
-	    e.printStackTrace();
-	}
+			// testing
+			// uncomment the next 2 lines to see the whole line read in
+			//System.out.println("I just read ->" + gameData + "<- " +
+			//		"outer for loop");
 
-	this.currentTurn = gameData.charAt( 0 ) - 48;
-	
-	//testing-uncomment the next 2 lines to see which current turn was read
-	//System.out.println("the current turn i read was->" +
-	//		this.currentTurn );
+			// read each piece from the input file
+			for( int j = 0; j < 7; j++ )
+			{
+				//testing- uncomment the next 3 lines to see each piece
+				// that was read in
+				//System.out.println("I just read ->" +
+				//		( gameData.charAt( counter ) - 48 ) +
+				//		"<- inner for loop");
 
-	// make sure the turn corresponds to the number of pcs played already
-	if(!( ( this.currentTurn == 1) || ( this.currentTurn == 2 ) ) ) 
-	{
-	    System.out.println("Problems!\n the current turn read is not a " +
-			       "1 or a 2!");
-	    this.exit_function( 0 );
-	} 
-	else if ( this.getCurrentTurn() != this.currentTurn ) 
-	{
-	    System.out.println("Problems!\n the current turn read does not " +
-			       "correspond to the number of pieces played!");
-	    this.exit_function( 0 );			
-	}
+				this.playBoard[ i ][ j ] = gameData.charAt( counter++ ) - 48;
+
+				// sanity check
+				if( !( ( this.playBoard[ i ][ j ] == 0 ) ||
+				   ( this.playBoard[ i ][ j ] == 1 ) ||
+				   ( this.playBoard[ i ][ j ] == 2 ) ) )
+						{
+				System.out.println("\nProblems!\n--The piece read " +
+						   "from the input file was not a 1, a 2 or a 0" );
+				this.exit_function( 0 );
+				}
+
+				if( this.playBoard[ i ][ j ] > 0 )
+				{
+				this.pieceCount++;
+				}
+			}
+			}
+			catch( Exception e )
+			{
+			System.out.println("\nProblem reading the input file!\n" +
+					   "Try again.\n");
+			e.printStackTrace();
+			this.exit_function( 0 );
+			}
+
+			//reset the counter
+			counter = 0;
+
+		} // end for loop
+
+		// read one more line to get the next players turn
+		try
+		{
+			gameData = input.readLine();
+		}
+		catch( Exception e )
+		{
+			System.out.println("\nProblem reading the next turn!\n" +
+					   "--Try again.\n");
+			e.printStackTrace();
+		}
+
+		// convert string to int
+		this.currentTurn = gameData.charAt( 0 ) - 48;
+
+		//testing-uncomment the next 2 lines to see which current turn was read
+		//System.out.println("the current turn i read was->" +
+		//		this.currentTurn );
+
+		// make sure the turn corresponds to the number of pcs played already
+		if(!( ( this.currentTurn == 1) || ( this.currentTurn == 2 ) ) )
+		{
+			System.out.println("Problems!\n the current turn read is not a " +
+					   "1 or a 2!");
+			this.exit_function( 0 );
+		}
+		else if ( this.getCurrentTurn() != this.currentTurn )
+		{
+			System.out.println("Problems!\n the current turn read does not " +
+					   "correspond to the number of pieces played!");
+			this.exit_function( 0 );
+		}
     } // end GameBoard( String )
 
 	
@@ -140,22 +141,22 @@ public class GameBoard
      */
     public GameBoard( int masterGame[][] ) 
     {
-	
-	this.playBoard = new int[6][7];
-	this.pieceCount = 0;
+		this.playBoard = new int[6][7];
+		this.pieceCount = 0;
 
-	for( int i = 0; i < 6; i++ ) 
-	{
-	    for( int j = 0; j < 7; j++) 
-	    {
-		this.playBoard[ i ][ j ] = masterGame[ i ][ j ];
-		
-		if( this.playBoard[i][j] > 0 )
+		for( int i = 0; i < 6; i++ )
 		{
-		    this.pieceCount++;
+			for( int j = 0; j < 7; j++)
+			{
+				this.playBoard[ i ][ j ] = masterGame[ i ][ j ];
+
+				if( this.playBoard[i][j] > 0 )
+				{
+					this.pieceCount++;
+				}
+			}
 		}
-	    }
-	}
+		this.currentTurn = this.getCurrentTurn();
     } // end GameBoard( int[][] )
 
     /**
@@ -170,62 +171,97 @@ public class GameBoard
      */
     public int getScore( int player ) 
     {
-	//reset the scores
-	int playerScore = 0;
+		//reset the scores
+		int playerScore = 0;
 
-	//check horizontally
-	for( int i = 0; i < 6; i++ ) 
-        {
-	    for( int j = 0; j < 4; j++ ) 
-	    {
-		if( ( this.playBoard[ i ][j] == player ) &&
-		    ( this.playBoard[ i ][ j+1 ] == player ) &&
-		    ( this.playBoard[ i ][ j+2 ] == player ) &&
-		    ( this.playBoard[ i ][ j+3 ] == player ) ) 
+		//check horizontally
+		for( int i = 0; i < 6; i++ )
 		{
-		    playerScore++;
-		}
-	    }
-	} // end horizontal
+			for( int j = 0; j < 4; j++ )
+			{
+				if( ( this.playBoard[ i ][j] == player ) &&
+					( this.playBoard[ i ][ j+1 ] == player ) &&
+					( this.playBoard[ i ][ j+2 ] == player ) &&
+					( this.playBoard[ i ][ j+3 ] == player ) )
+				{
+					playerScore++;
+				}
+			}
+		} // end horizontal
 
-	//check vertically
-	for( int i = 0; i < 3; i++ ) {
-	    for( int j = 0; j < 7; j++ ) {
-		if( ( this.playBoard[ i ][ j ] == player ) &&
-		    ( this.playBoard[ i+1 ][ j ] == player ) &&
-		    ( this.playBoard[ i+2 ][ j ] == player ) &&
-		    ( this.playBoard[ i+3 ][ j ] == player ) ) {
-		    playerScore++;
-		}
-	    }
-	} // end verticle
-	
-	//check diagonally - backs lash ->	\
+		//check vertically
+		for( int i = 0; i < 3; i++ ) {
+			for( int j = 0; j < 7; j++ )
+			{
+				if( ( this.playBoard[ i ][ j ] == player ) &&
+					( this.playBoard[ i+1 ][ j ] == player ) &&
+					( this.playBoard[ i+2 ][ j ] == player ) &&
+					( this.playBoard[ i+3 ][ j ] == player ) )
+				{
+					playerScore++;
+				}
+			}
+		} // end vertical
+
+		//check diagonally - backs lash ->	\
 	    for( int i = 0; i < 3; i++ ){
-		for( int j = 0; j < 4; j++ ) {
-		    if( ( this.playBoard[ i ][ j ] == player ) &&
-			( this.playBoard[ i+1 ][ j+1 ] == player ) &&
-			( this.playBoard[ i+2 ][ j+2 ] == player ) &&
-			( this.playBoard[ i+3 ][ j+3 ] == player ) ) {
-			playerScore++;
-		    }
-		}
+			for( int j = 0; j < 4; j++ ) {
+				if( ( this.playBoard[ i ][ j ] == player ) &&
+				( this.playBoard[ i+1 ][ j+1 ] == player ) &&
+				( this.playBoard[ i+2 ][ j+2 ] == player ) &&
+				( this.playBoard[ i+3 ][ j+3 ] == player ) ) {
+				playerScore++;
+				}
+			}
 	    }
 	    
 	    //check diagonally - forward slash -> /
 	    for( int i = 0; i < 3; i++ ){
-		for( int j = 0; j < 4; j++ ) {
-		    if( ( this.playBoard[ i+3 ][ j ] == player ) &&
-			( this.playBoard[ i+2 ][ j+1 ] == player ) &&
-			( this.playBoard[ i+1 ][ j+2 ] == player ) &&
-			( this.playBoard[ i ][ j+3 ] == player ) ) {
-			playerScore++;
-		    }
-		}
+			for( int j = 0; j < 4; j++ ) {
+				if( ( this.playBoard[ i+3 ][ j ] == player ) &&
+				( this.playBoard[ i+2 ][ j+1 ] == player ) &&
+				( this.playBoard[ i+1 ][ j+2 ] == player ) &&
+				( this.playBoard[ i ][ j+3 ] == player ) ) {
+				playerScore++;
+				}
+			}
 	    }// end player score check
-	    
 	    return playerScore;
     } // end getScore
+
+	/**
+	 * This is an evaluation function that is based on a game where the player
+	 * with the most points wins
+	 * @return a value
+	 */
+	public int evaluate()
+	{
+		// inverse because calculating utility after current turn has played
+		// meaning player has not actually played for real yet
+		int currentPlayer;
+		int opponentPlayer = this.getCurrentTurn();
+		if (opponentPlayer == 1)
+			currentPlayer = 2;
+		else
+			currentPlayer = 1;
+
+		int currentScore = this.getScore(currentPlayer);
+		int opponentScore = this.getScore(opponentPlayer);
+
+		return currentScore - opponentScore;
+	}
+
+	public int evaluate(int player)
+	{
+		// inverse because calculating utility after current turn has played
+		// meaning player has not actually played for real yet
+		int opponentPlayer = (player == 1) ? 2 : 1;
+
+		int currentScore = this.getScore(player);
+		int opponentScore = this.getScore(opponentPlayer);
+
+		return currentScore - opponentScore;
+	}
 
     /**
      * the method gets the current turn
@@ -233,7 +269,7 @@ public class GameBoard
      */
     public int getCurrentTurn() 
     {
-	return ( this.pieceCount % 2 ) + 1 ;
+		return ( this.pieceCount % 2 ) + 1 ;
     } // end getCurrentTurn
 
 
@@ -242,14 +278,22 @@ public class GameBoard
      * board 
      * 
      * @return an int representing the number of pieces that have been played
-     * on board alread
+     * on board already
      */
-    public int getPieceCount() 
-    {
-	return this.pieceCount;
-    }
+    public int getPieceCount() {return this.pieceCount; }
 
-    /**
+	/**
+	 * this method return true if the gameboard is full
+	 */
+	public boolean isFull()
+	{
+		if(this.pieceCount == 42)
+			return true;
+		else
+			return false;
+	}
+
+	/**
      * this method returns the whole gameboard as a dual indexed array
      * @return a dual indexed array representing the gameboard
      */
@@ -267,17 +311,16 @@ public class GameBoard
      * false if it is either out of bounds or the column is full
      */
     public boolean isValidPlay( int column ) {
-	
-	if ( !( column >= 0 && column <= 7 ) ) {
-	    // check the column bounds
-	    return false;
-	} else if( this.playBoard[0][ column ] > 0 ) {
-	    // check if column is full
-	    return false;
-	} else {
-	    // column is NOT full and the column is within bounds
-	    return true;
-	}
+		if ( !( column >= 0 && column <= 6 ) ) {
+			// check the column bounds
+			return false;
+		} else if( this.playBoard[0][ column ] > 0 ) {
+			// check if column is full
+			return false;
+		} else {
+			// column is NOT full and the column is within bounds
+			return true;
+		}
     }
 
     /**
@@ -288,41 +331,63 @@ public class GameBoard
      */
     public boolean playPiece( int column ) {
 	
-	// check if the column choice is a valid play
-	if( !this.isValidPlay( column ) ) {
-	    return false;
-	} else {
-	    
-	    //starting at the bottom of the board,
-	    //place the piece into the first empty spot
-	    for( int i = 5; i >= 0; i-- ) {
-		if( this.playBoard[i][column] == 0 ) {
-		    if( this.pieceCount % 2 == 0 ){
-			this.playBoard[i][column] = 1;
-			this.pieceCount++;
-			
-		    } else { 
-			this.playBoard[i][column] = 2;
-			this.pieceCount++;
-		    }
-		    
-		    //testing
-		    //warning: uncommenting the next 3 lines will
-		    //potentially produce LOTS of output
-		    //System.out.println("i just played piece in column ->" +
-		    //		column + "<-");
-		    //this.printGameBoard();
-		    //end testing
-		    
-		    return true;
+		// check if the column choice is a valid play
+		if( !this.isValidPlay( column ) ) {
+			return false;
+		} else {
+
+			//starting at the bottom of the board,
+			//place the piece into the first empty spot
+			for( int i = 5; i >= 0; i-- )
+			{
+				if( this.playBoard[i][column] == 0 )
+				{
+					if( this.pieceCount % 2 == 0 )
+					{
+						this.playBoard[i][column] = 1;
+						this.pieceCount++;
+					} else {
+						this.playBoard[i][column] = 2;
+						this.pieceCount++;
+					}
+
+					//testing
+					//warning: uncommenting the next 3 lines will
+					//potentially produce LOTS of output
+					//System.out.println("i just played piece in column ->" +
+					//		column + "<-");
+					//this.printGameBoard();
+					//end testing
+					this.currentTurn = this.getCurrentTurn();
+					return true;
+				}
+			}
+			//the pgm shouldn't get here
+			System.out.println("Something went wrong with playPiece()");
+
+			return false;
 		}
-	    }
-	    //the pgm shouldn't get here
-	    System.out.println("Something went wrong with playPiece()");
-	    
-	    return false;
-	}
     } //end playPiece
+
+	public boolean playAnyPiece(int column, int currentTurn)
+	{
+		if( !this.isValidPlay(column))
+		{
+			return false;
+		} else {
+			for( int i=5; i>=0; i--)
+			{
+				if(this.playBoard[i][column] == 0)
+				{
+					this.playBoard[i][column] = currentTurn;
+					this.pieceCount++;
+					this.currentTurn = (this.currentTurn == 1) ? 2 : 1;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
     
     /***************************  solution methods **************************/
     
@@ -331,25 +396,24 @@ public class GameBoard
      * @param column the column to remove a piece from 
      */
     public void removePiece( int column ) {
-	
-	// starting looking at the top of the game board,
-	// and remove the top piece
-	for( int i = 0; i < 6; i++ ) {
-	    if( this.playBoard[ i ][ column ] > 0 ) {
-		this.playBoard[ i ][ column ] = 0;
-		this.pieceCount--;
-		
-		break;
-	    }
-	}
-	
-	//testing
-	//WARNING: uncommenting the next 3 lines will potentially
-	//produce LOTS of output
-	//System.out.println("gameBoard.removePiece(). I am removing the " +
-	//		"piece in column ->" + column + "<-");
-	//this.printGameBoard();
-	//end testing
+		// starting looking at the top of the game board,
+		// and remove the top piece
+		for( int i = 0; i < 6; i++ ) {
+			if( this.playBoard[ i ][ column ] > 0 ) {
+			this.playBoard[ i ][ column ] = 0;
+			this.pieceCount--;
+			this.currentTurn = this.getCurrentTurn();
+			break;
+			}
+		}
+
+		//testing
+		//WARNING: uncommenting the next 3 lines will potentially
+		//produce LOTS of output
+		//System.out.println("gameBoard.removePiece(). I am removing the " +
+		//		"piece in column ->" + column + "<-");
+		//this.printGameBoard();
+		//end testing
 	
     } // end remove piece	
     
@@ -378,13 +442,17 @@ public class GameBoard
     } // end printGameBoard
 
 	/**
-	 * this method prints current game board:
-	 * move number, current player, column playing
+	 * This function is to show what decision has been made and prints piece count
+	 * and getCurrentTurn - 1 because it refers to the person who previously made
+	 * the move to reach current board state
+	 * @param playColumn column chosen to be played
 	 */
-	public void printCurrentGameBoard(int playColumn)
+	public void printCurrentMove(int playColumn)
 	{
+		int turn = (this.getCurrentTurn() == 1) ? 2 : 1;
+		// getCurrentTurn - 1 because this function is called after a move has been made
 		System.out.println("move " + this.getPieceCount()
-							+ ": Player " + this.getCurrentTurn()
+							+ ": Player " + turn
 							+ ", column " + playColumn);
 	}
 
